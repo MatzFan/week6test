@@ -18,14 +18,30 @@ describe Editor do
         output.should include("#{cmd}: #{description}" )
       end
     end
-  end
+  end # of context
 
-  context 'exiting' do
-    it 'should exit if X is entered' do
+  context 'parsing space-separated input' do
+    it 'should yield the command and an array of paramaters' do
+      capture_output do
+        editor.parse('cmd p1 p2 p3').should eq(['cmd', ['p1', 'p2', 'p3']])
+      end
+    end
+  end # of context
+
+  context 'command X' do
+    it 'should exit the app' do
       capture_output do
         lambda { editor.do_command('X') }.should raise_error(SystemExit)
       end
     end
-  end
+  end # of context
+
+  context 'command I' do
+    it "with args 250 250 should print a 2 by 2 grid of O's" do
+      capture_output do
+        editor.do_command('I 2 2').should eq("OO\nOO")
+      end
+    end
+  end # of context
 
 end # of describe

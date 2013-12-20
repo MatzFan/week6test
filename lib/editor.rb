@@ -19,16 +19,29 @@ class Editor
   end
 
   def do_command(input)
-    validate_the input
-    self.send(input.downcase)
+    command, params = parse(input)
+    self.send(command.downcase!, params) if validate(command, params)
   end
 
-  def validate_the(command)
-
+  def parse(input)
+    args = input.split(' ')
+    return args[0], args[1..-1]
   end
 
-  def x
+  def validate(command, params)
+    true
+  end
+
+  def x(ignored)
     exit
+  end
+
+  def i(coords)
+    m, n = coords
+    m, n = m.to_i, n.to_i
+    s = ''
+    n.times { s << "#{'O' * m}\n" }
+    s.chomp
   end
 
 end # of class

@@ -2,7 +2,7 @@
 
 require './lib/editor'
 
-editor = Editor.new
+editor = editor.new
 command = gets.chomp
 loop do
   editor.do_the command
