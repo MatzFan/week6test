@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 class Editor
 
   COMMANDS = {X: 'Exit',
@@ -7,27 +5,30 @@ class Editor
                }
 
   def initialize
-    puts "Welcome to the graphical editor.\n"\
-    "The commands are:\n"
+    display_splash_message
+  end
+
+  def display_splash_message
+    puts "Welcome to the graphical editor.\nThe commands are:\n"
     show_commands
-    puts 'Please enter your command'
+    puts 'Please enter a command'
   end
 
   def show_commands
     COMMANDS.each_pair { |cmd,function| puts "#{cmd}: #{function}" }
   end
 
-  def do_the(command)
-    validate_command
-    self.send(command.downcase)
+  def do_command(input)
+    validate_the input
+    self.send(input.downcase)
   end
 
-  def validate_command(command)
+  def validate_the(command)
 
   end
 
-  def s
-
+  def x
+    exit
   end
 
 end # of class
