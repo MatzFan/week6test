@@ -5,7 +5,7 @@ describe Editor do
 
   let(:editor) { Editor.new }
 
-  context '#new' do
+  context 'new objects' do
     it 'should be initialized with a welcome message and prompt' do
       output = capture_output { editor }
       output.should include('Welcome to the graphical editor')
@@ -53,7 +53,7 @@ describe Editor do
   context 'command I' do
     it "with args 250 250 should print a 2 by 2 grid of O's" do
       capture_output do
-        editor.do_command('I 2 2').should eq("OO\nOO")
+        editor.do_command('I 2 2').to_s.should eq("OO\nOO")
       end
     end
   end # of context

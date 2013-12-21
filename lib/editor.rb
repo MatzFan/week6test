@@ -1,3 +1,5 @@
+require 'image'
+
 class Editor
 
   COMMANDS = {:HELP => 'Shows this command list',
@@ -42,12 +44,13 @@ class Editor
     exit
   end
 
-  def i(coords)
-    m, n = coords
-    m, n = m.to_i, n.to_i
-    s = ''
-    n.times { s << "#{'O' * m}\n" }
-    s.chomp
+  def i(args)
+    begin
+      m, n = args[0].to_i, args[1].to_i
+    rescue ArguementError
+      return "Command 'I' takes two integer prameters"
+    end
+    @image = Image.new(m, n)
   end
 
 end # of class
