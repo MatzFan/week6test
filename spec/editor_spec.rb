@@ -37,7 +37,7 @@ describe Editor do
   context 'validating commands' do
     it 'should give a prompt with commands list if an invalid command used' do
       capture_output do
-        editor.do_command('Z').should eq("'Z' is not valid, hit '?' for command list")
+        editor.do_command('Z').should eq("'Z' is not valid, try 'help'")
       end
     end
   end # of context
