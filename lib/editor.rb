@@ -19,8 +19,9 @@ class Editor
   end
 
   def do_command(input)
+    return 'Please enter a valid command' if input.empty?
     command, params = parse(input)
-    self.send(command.downcase!, params) if validate(command, params)
+    validate(command, params)
   end
 
   def parse(input)
@@ -29,7 +30,11 @@ class Editor
   end
 
   def validate(command, params)
-    true
+    if COMMANDS.keys.include? command.to_sym
+      self.send(command.downcase!, params)
+    else
+      return "'#{command}' is not valid, hit '?' for command list"
+    end
   end
 
   def x(ignored)
@@ -45,3 +50,6 @@ class Editor
   end
 
 end # of class
+
+p Editor::COMMANDS.keys
+

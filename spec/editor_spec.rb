@@ -26,6 +26,20 @@ describe Editor do
         editor.parse('cmd p1 p2 p3').should eq(['cmd', ['p1', 'p2', 'p3']])
       end
     end
+
+    it 'should give a prompt on null entry' do
+      capture_output do
+        editor.do_command('').should eq('Please enter a valid command')
+      end
+    end
+  end # of context
+
+  context 'validating commands' do
+    it 'should give a prompt with commands list if an invalid command used' do
+      capture_output do
+        editor.do_command('Z').should eq("'Z' is not valid, hit '?' for command list")
+      end
+    end
   end # of context
 
   context 'command X' do

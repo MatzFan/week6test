@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require './lib/editor'
+
+editor = Editor.new
+loop do
+  input = gets.chomp
+  puts editor.do_command input
+end
