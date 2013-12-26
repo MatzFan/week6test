@@ -6,17 +6,17 @@ describe Editor do
   let(:editor) { Editor.new }
   let(:editor_3_4) { editor.do_command('I 3 4'); editor }
 
-  context 'new objects' do
-    it 'should be initialized with a welcome message and prompt' do
+  context 'initialization' do
+    it 'should include a welcome message and prompt' do
       output = capture_output { editor }
       output.should include('Welcome to the graphical editor')
       output.should include('Please enter a command')
     end
 
-    it 'should be initialized with a list of the commands' do
+    it 'should include a list of the commands' do
       output = capture_output { editor }
-      Editor::COMMANDS.each_pair do |cmd, description|
-        output.should include("#{cmd}: #{description}" )
+      Editor::COMMAND_TEXT.each_pair do |cmd, text|
+        output.should include("#{cmd}: #{text}" )
       end
     end
   end # of context
@@ -44,8 +44,11 @@ describe Editor do
 
   context 'validating input' do
     it 'should give a prompt with commands list if an invalid command used' do
+      bad_cmds = ['Z', '`', '!', '?', '[', 'exit']
       capture_output do
-        editor.do_command('Z').should eq("'Z' is not valid, try 'help'")
+        bad_cmds.each do |cmd|
+          editor.do_command(cmd).should eq("'#{cmd}' is not valid, try 'help'")
+        end
       end
     end
 
@@ -90,7 +93,7 @@ describe Editor do
       end
     end
 
-    it "should display an error message with args 251 3" do
+    it "should display an error message with args over image size limits" do
       capture_output do
         editor.do_command('I 251 3').should eq('Maximum size is 250 x 250')
       end

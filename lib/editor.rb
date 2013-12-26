@@ -6,18 +6,19 @@ class Editor
 
   X_MAX, Y_MAX = 250, 250
 
-  COMMANDS = {:HELP => 'Shows this command list',
-              :X => 'Exit',
-              :I => "Creates new image M x N pixels up to #{X_MAX} x #{Y_MAX}",
-              :C => 'Clears the table, setting all pixels to white (O)',
-              :S => 'Shows the current Image',
-              :L => 'Colours a single pixel (X,Y) with colour C',
-              :H => 'Draws a horizonal segment of colour C in row Y between'+
-                    ' columns X1 and X2 inclusive',
-              :V => 'Draws a vertical segment of colour C in column X between'+
-                    ' rows Y1 and Y2 inclusive',
-              :F => 'Fills contiguous region with colour C starting at pixel'+
-                    ' X,Y'}
+  COMMAND_TEXT = {
+    :HELP => 'Shows this command list',
+    :I => "Creates new image M x N pixels up to #{X_MAX} x #{Y_MAX}",
+    :C => 'Clears the table, setting all pixels to white (O)',
+    :L => 'Colours a single pixel (X,Y) with colour C',
+    :V => 'Draws a vertical segment of colour C in column X between'+
+          ' rows Y1 and Y2 inclusive',
+    :H => 'Draws a horizonal segment of colour C in row Y between'+
+          ' columns X1 and X2 inclusive',
+    :F => 'Fills contiguous region with colour C starting at pixel X,Y',
+    :S => 'Shows the current image',
+    :X => 'Exit'
+  }
 
   def initialize
     display_splash_message
@@ -44,8 +45,12 @@ class Editor
   end
 
   def validate(command, params)
-    if COMMANDS.keys.include? command.to_sym
-      self.send(command.downcase, params)
+    if COMMAND_TEXT.keys.include? command.to_sym
+      begin
+        self.send(command.downcase, params)
+      rescue ArgumentError => e
+        return e.message
+      end
     else
       return "'#{command}' is not valid, try 'help'"
     end
@@ -61,7 +66,7 @@ class Editor
     VALID_COLOURS.include? colour
   end
 
-  def no_params_message(command)
+  def no_params(command)
     "'#{command.upcase}' does not take parameters."
   end
 
@@ -74,21 +79,23 @@ class Editor
   end
 
   def help(params_ignored)
-    COMMANDS.each_pair { |cmd,function| puts "#{cmd}: #{function}" }
+    COMMAND_TEXT.each_pair do |cmd, text|
+      puts "#{cmd}: #{text}"
+    end
   end
 
   def c(params)
-    return no_params_message(__method__) unless params.empty?
+    return no_params(__method__) unless params.empty?
     @image = Image.new(@image.m, @image.n) if @image
   end
 
   def s(params)
-    return no_params_message(__method__) unless params.empty?
+    return no_params(__method__) unless params.empty?
     puts @image
   end
 
   def x(params)
-    return no_params_message(__method__) unless params.empty?
+    return no_params(__method__) unless params.empty?
     exit
   end
 
@@ -100,29 +107,40 @@ class Editor
     @image = Image.new(m, n)
   end
 
+  def check_coords_and_colour(params)
+    colour = params.pop
+    coords = params
+    raise ArgumentError, 'Invalid coordinates' unless valid_coords?(coords)
+    raise ArgumentError, 'Invalid colour' unless valid_colour?(colour)
+    return coords, colour
+  end
+
   def l(params)
     return no_image_yet unless @image
     return wrong_number_of_params(__method__, 3) if params.length != 3
-    coords = params[0], params[1]
-    colour = params[2]
-    return 'Invalid coordinates' unless valid_coords?(coords)
-    return 'Invalid colour' unless valid_colour?(colour)
-    @image.colour_pixel(coords, colour)
+    coords, colour = check_coords_and_colour(params)
+    @image.colour_pixel(coords, colour) if coords && colour
   end
 
   def v(params)
     return no_image_yet unless @image
+    return wrong_number_of_params(__method__, 4) if params.length != 4
+    x = params.shift!
+
 
   end
 
   def h(params)
     return no_image_yet unless @image
+    return wrong_number_of_params(__method__, 4) if params.length != 4
 
   end
 
   def f(params)
     return no_image_yet unless @image
-
+    return wrong_number_of_params(__method__, 3) if params.length != 3
+    coords, colour = check_coords_and_colour(params)
+    @image.colour_fill(coords, colour)
   end
 
 end # of class

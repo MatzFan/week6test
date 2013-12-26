@@ -8,9 +8,14 @@ class Image
     @chars = Array.new(m * n, 'O')
   end
 
-  def colour_pixel(coords,colour)
+  def colour_pixel(coords, colour)
     x, y = coords
     @chars[(y - 1) * @m + x - 1] = colour
+  end
+
+  def colour_fill(coords, colour)
+    x, y = coords
+
   end
 
   def to_s
