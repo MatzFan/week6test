@@ -70,13 +70,20 @@ describe Editor do
   end # of context
 
   context 'command I' do
-    it "with args 2 3 should create a 2 by 3 grid of O's" do
+    it "should create a 2 by 3 grid of O's with args 2 3" do
       capture_output do
         editor.do_command('I 2 3').to_s.should eq("OO\nOO\nOO")
       end
     end
 
-    it "with args 251 3 should display an error message" do
+    it "should display an error message with zero or negative coords" do
+      capture_output do
+        editor.do_command('I 0 3').should eq('Invalid coordinates')
+        editor.do_command('I 250 -2').should eq('Invalid coordinates')
+      end
+    end
+
+    it "should display an error message with args 251 3" do
       capture_output do
         editor.do_command('I 251 3').should eq('Maximum size is 250 x 250')
       end
@@ -84,7 +91,7 @@ describe Editor do
   end # of context
 
   context 'command S' do
-    it "with args 2 3 should print a 2 by 3 grid of O's" do
+    it "should print a 2 by 3 grid of O's with args 2 3" do
       output = capture_output do
         e = editor
         e.do_command('I 2 3')
@@ -101,7 +108,7 @@ describe Editor do
   end # of context
 
   context 'command L' do
-    it "with args '2 3 A' should colour a single pixel" do
+    it "should colour a single pixel with args '2 3 A' " do
       output = capture_output do
         e = editor
         e.do_command('I 3 4')

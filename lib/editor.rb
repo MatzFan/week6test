@@ -53,6 +53,7 @@ class Editor
 
   def valid_coords?(coords)
     return unless coords.length == 2 && coords.all? { |c| c.is_a? Integer }
+    return unless coords[0] > 0 && coords[1] > 0
     @image ? coords[0] <= @image.m && coords[1] <= @image.n : true
   end
 
