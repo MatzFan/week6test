@@ -2,9 +2,13 @@ require_relative 'image'
 
 class Editor
 
+  VALID_COLOURS = ('A'..'Z').to_a
+
+  X_MAX, Y_MAX = 250, 250
+
   COMMANDS = {:HELP => 'Shows this command list',
               :X => 'Exit',
-              :I => 'Creates new image M x N pixels, up to 250 square',
+              :I => "Creates new image M x N pixels up to #{X_MAX} x #{Y_MAX}",
               :C => 'Clears the table, setting all pixels to white (O)',
               :S => 'Shows the current Image',
               :L => 'Colours a single pixel (X,Y) with colour C',
@@ -15,10 +19,6 @@ class Editor
               :F => 'Fills contiguous region with colour C starting at pixel'+
                     ' X,Y'}
 
-  VALID_COLOURS = ('A'..'Z').to_a
-
-  X_LIMIT, Y_LIMIT = 250, 250
-
   def initialize
     display_splash_message
     @image = nil
@@ -26,7 +26,7 @@ class Editor
 
   def display_splash_message
     puts "Welcome to the graphical editor. The commands are:\n\n"
-    help
+    help(nil)
     puts "\nPlease enter a command"
   end
 
@@ -65,11 +65,15 @@ class Editor
     "'#{command.upcase}' does not take parameters."
   end
 
-  def no_image_yet
-    'Create an image first (I)'
+  def wrong_number_of_params(command, num)
+    "#{command.upcase} takes #{num} parameters, try 'help'"
   end
 
-  def help
+  def no_image_yet
+    "Create an image first with 'I'"
+  end
+
+  def help(params_ignored)
     COMMANDS.each_pair { |cmd,function| puts "#{cmd}: #{function}" }
   end
 
@@ -78,42 +82,47 @@ class Editor
     @image = Image.new(@image.m, @image.n) if @image
   end
 
-  def x(params)
-    return no_params_message(__method__) unless params.empty?
-    exit
-  end
-
   def s(params)
     return no_params_message(__method__) unless params.empty?
     puts @image
   end
 
+  def x(params)
+    return no_params_message(__method__) unless params.empty?
+    exit
+  end
+
   def i(params)
+    return wrong_number_of_params(__method__, 2) if params.length != 2
     return 'Invalid coordinates' unless valid_coords?(params)
     m, n = params[0], params[1]
-    return "Maximum size is #{X_LIMIT} x #{Y_LIMIT}" if (m > 250 || n > 250)
+    return "Maximum size is #{X_MAX} x #{Y_MAX}" if (m > 250 || n > 250)
     @image = Image.new(m, n)
   end
 
   def l(params)
     return no_image_yet unless @image
+    return wrong_number_of_params(__method__, 3) if params.length != 3
     coords = params[0], params[1]
     colour = params[2]
-    if valid_coords?(coords) && valid_colour?(colour)
-      @image.colour_pixel(coords, colour)
-    end
+    return 'Invalid coordinates' unless valid_coords?(coords)
+    return 'Invalid colour' unless valid_colour?(colour)
+    @image.colour_pixel(coords, colour)
   end
 
   def v(params)
-    puts @image
+    return no_image_yet unless @image
+
   end
 
   def h(params)
-    puts @image
+    return no_image_yet unless @image
+
   end
 
   def f(params)
-    puts @image
+    return no_image_yet unless @image
+
   end
 
 end # of class

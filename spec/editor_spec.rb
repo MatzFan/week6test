@@ -77,6 +77,12 @@ describe Editor do
       end
     end
 
+    it "should display an error message if wrong number of parameters given" do
+      capture_output do
+        editor.do_command('I 2 4 R').should eq("I takes 2 parameters, try 'help'")
+      end
+    end
+
     it "should display an error message with zero or negative coords" do
       capture_output do
         editor.do_command('I 0 3').should eq('Invalid coordinates')
@@ -118,9 +124,30 @@ describe Editor do
       output[-16..-2].should eq("OOO\nOOO\nOAO\nOOO")
     end
 
-    it "should display an error message when no image has been created" do
+    it "should display an error message if no image has been created" do
       capture_output do
-        editor.do_command('L 2 3 A').should eq('Create an image first (I)')
+        editor.do_command('L 2 3 A').should eq("Create an image first with 'I'")
+      end
+    end
+
+    it "should display an error message if wrong number of parameters given" do
+      capture_output do
+        editor_3_4.do_command('L 2').should eq("L takes 3 parameters, try 'help'")
+      end
+    end
+
+    it "should display an error message if coords out of range" do
+      capture_output do
+        editor_3_4.do_command('L 7 3 A').should eq('Invalid coordinates')
+      end
+    end
+
+    it "should display an error message if an invalid colour is provided" do
+      wrong_colours = ['x', '1', '>', '$']
+      capture_output do
+        wrong_colours.each do |colour|
+          editor_3_4.do_command("L 2 3 #{colour}").should eq('Invalid colour')
+        end
       end
     end
   end # of context
