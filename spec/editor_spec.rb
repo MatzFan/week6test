@@ -46,6 +46,12 @@ describe Editor do
         editor.do_command('Z').should eq("'Z' is not valid, try 'help'")
       end
     end
+
+    it 'should give a prompt with commands list if lower-case command used' do
+      capture_output do
+        editor.do_command('s').should eq("'s' is not valid, try 'help'")
+      end
+    end
   end # of context
 
   context 'command X' do
@@ -77,7 +83,13 @@ describe Editor do
         e.do_command('I 2 3')
         e.do_command('S')
       end
-      output.should include("OO\nOO\nOO")
+      output[-9..-2].should eq("OO\nOO\nOO")
+    end
+
+    it 'should display an error message if parameters provided' do
+      capture_output do
+        editor.do_command('S 2 3').should eq("'S' does not take parameters.")
+      end
     end
   end # of context
 
@@ -89,8 +101,22 @@ describe Editor do
         e.do_command('L 2 3 A')
         e.do_command('S')
       end
-      output.should include("OOO\nOOO\nOAO\nOOO")
+      output[-16..-2].should eq("OOO\nOOO\nOAO\nOOO")
     end
   end # of context
+
+  context 'command C' do
+    it "should clear set the image to all 'O's" do
+      output = capture_output do
+        e = editor
+        e.do_command('I 3 4')
+        e.do_command('L 2 3 A')
+        e.do_command('C')
+        e.do_command('S')
+      end
+      output[-16..-2].should eq("OOO\nOOO\nOOO\nOOO")
+    end
+  end # of context
+
 
 end # of describe

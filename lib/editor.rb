@@ -5,6 +5,7 @@ class Editor
   COMMANDS = {:HELP => 'Shows this command list',
               :X => 'Exit',
               :I => 'Create new image M x N',
+              :C => 'Clears the table, setting all pixels to white (O)',
               :S => 'Shows the current Image',
               :L => 'Colours a single pixel (X,Y) with colour C',
               :H => 'Draws a horizonal segment of colour C in row Y between'+
@@ -18,16 +19,13 @@ class Editor
 
   def initialize
     display_splash_message
+    @image = nil
   end
 
   def display_splash_message
     puts "Welcome to the graphical editor.\nThe commands are:\n"
     help
     puts 'Please enter a command'
-  end
-
-  def help
-    COMMANDS.each_pair { |cmd,function| puts "#{cmd}: #{function}" }
   end
 
   def do_command(input)
@@ -65,12 +63,22 @@ class Editor
     "'#{command.upcase}' does not take parameters."
   end
 
+  def help
+    COMMANDS.each_pair { |cmd,function| puts "#{cmd}: #{function}" }
+  end
+
+  def c(params)
+    return no_params_message(__method__) unless params.empty?
+    @image = Image.new(@image.m, @image.n)
+  end
+
   def x(params)
-    return no_params_message(__method__) if !params.empty?
+    return no_params_message(__method__) unless params.empty?
     exit
   end
 
   def s(params)
+    return no_params_message(__method__) unless params.empty?
     puts @image
   end
 
