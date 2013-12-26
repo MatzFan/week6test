@@ -14,4 +14,12 @@ describe Image do
     end
   end
 
+  context 'drawing a single pixel' do
+    it "should draw a coloured pixel at a grid reference within the image" do
+      image = Image.new(3,4)
+      image.colour_pixel(2,3,'A')
+      image.to_s.should eq("OOO\nOOO\nOAO\nOOO")
+    end
+  end
+
 end # of describe
