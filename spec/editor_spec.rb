@@ -179,5 +179,15 @@ describe Editor do
     end
   end # of context
 
+  context 'command V' do
+    it "should draw a vertical segment in an image" do
+      output = capture_output do
+        e = editor_3_4
+        e.do_command('V 2 3 4 H')
+        e.do_command('S')
+      end
+      output[-16..-2].should eq("OOO\nOOO\nOHO\nOHO")
+    end
+  end # of context
 
 end # of describe
