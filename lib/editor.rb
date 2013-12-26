@@ -4,7 +4,7 @@ class Editor
 
   COMMANDS = {:HELP => 'Shows this command list',
               :X => 'Exit',
-              :I => 'Create new image M x N',
+              :I => 'Creates new image M x N pixels, up to 250 square',
               :C => 'Clears the table, setting all pixels to white (O)',
               :S => 'Shows the current Image',
               :L => 'Colours a single pixel (X,Y) with colour C',
@@ -17,19 +17,21 @@ class Editor
 
   VALID_COLOURS = ('A'..'Z').to_a
 
+  X_LIMIT, Y_LIMIT = 250, 250
+
   def initialize
     display_splash_message
     @image = nil
   end
 
   def display_splash_message
-    puts "Welcome to the graphical editor.\nThe commands are:\n"
+    puts "Welcome to the graphical editor. The commands are:\n\n"
     help
-    puts 'Please enter a command'
+    puts "\nPlease enter a command"
   end
 
   def do_command(input)
-    return 'Please enter a valid command' if input.empty?
+    return 'Please enter a valid command' if input.strip.empty?
     command, params = parse(input)
     validate(command, params)
   end
@@ -50,9 +52,8 @@ class Editor
   end
 
   def valid_coords?(coords)
-    x = coords[0].to_i
-    y = coords[1].to_i
-    @image ? x <= @image.m && y <= @image.n : x <= 250 && y <= 250
+    return unless coords.length == 2 && coords.all? { |c| c.is_a? Integer }
+    @image ? coords[0] <= @image.m && coords[1] <= @image.n : true
   end
 
   def valid_colour?(colour)
@@ -83,10 +84,10 @@ class Editor
   end
 
   def i(params)
-    if valid_coords?(params)
-      m, n = params[0].to_i, params[1].to_i
-      @image = Image.new(m, n)
-    end
+    return 'Invalid coordinates' unless valid_coords?(params)
+    m, n = params[0], params[1]
+    return "Maximum size is #{X_LIMIT} x #{Y_LIMIT}" if (m > 250 || n > 250)
+    @image = Image.new(m, n)
   end
 
   def l(params)

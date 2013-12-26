@@ -33,9 +33,10 @@ describe Editor do
       end
     end
 
-    it 'should give a prompt on null entry' do
+    it 'should give a prompt on null or any whitespace entry' do
+      whitespace, msg = ['',' ',"\t"," \t\r"], 'Please enter a valid command'
       capture_output do
-        editor.do_command('').should eq('Please enter a valid command')
+        whitespace.each { |ws| editor.do_command(ws).should eq(msg) }
       end
     end
   end # of context
@@ -72,6 +73,12 @@ describe Editor do
     it "with args 2 3 should create a 2 by 3 grid of O's" do
       capture_output do
         editor.do_command('I 2 3').to_s.should eq("OO\nOO\nOO")
+      end
+    end
+
+    it "with args 251 3 should display an error message" do
+      capture_output do
+        editor.do_command('I 251 3').should eq('Maximum size is 250 x 250')
       end
     end
   end # of context
