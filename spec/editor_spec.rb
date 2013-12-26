@@ -4,6 +4,7 @@ require 'editor'
 describe Editor do
 
   let(:editor) { Editor.new }
+  let(:editor_3_4) { editor.do_command('I 3 4'); editor }
 
   context 'new objects' do
     it 'should be initialized with a welcome message and prompt' do
@@ -100,7 +101,7 @@ describe Editor do
       output[-9..-2].should eq("OO\nOO\nOO")
     end
 
-    it 'should display an error message if parameters provided' do
+    it 'should display an error message if parameters are provided' do
       capture_output do
         editor.do_command('S 2 3').should eq("'S' does not take parameters.")
       end
@@ -108,27 +109,43 @@ describe Editor do
   end # of context
 
   context 'command L' do
-    it "should colour a single pixel with args '2 3 A' " do
+    it "should colour a single pixel with args '2 3 A'" do
       output = capture_output do
-        e = editor
-        e.do_command('I 3 4')
+        e = editor_3_4
         e.do_command('L 2 3 A')
         e.do_command('S')
       end
       output[-16..-2].should eq("OOO\nOOO\nOAO\nOOO")
+    end
+
+    it "should display an error message when no image has been created" do
+      capture_output do
+        editor.do_command('L 2 3 A').should eq('Create an image first (I)')
+      end
     end
   end # of context
 
   context 'command C' do
     it "should clear set the image to all 'O's" do
       output = capture_output do
-        e = editor
-        e.do_command('I 3 4')
+        e = editor_3_4
         e.do_command('L 2 3 A')
         e.do_command('C')
         e.do_command('S')
       end
       output[-16..-2].should eq("OOO\nOOO\nOOO\nOOO")
+    end
+
+    it "should not cause an error if there is no image" do
+      capture_output do
+        lambda { editor.do_command('C') }.should_not raise_error
+      end
+    end
+
+    it 'should display an error message if parameters are provided' do
+      capture_output do
+        editor.do_command('C 2 3').should eq("'C' does not take parameters.")
+      end
     end
   end # of context
 

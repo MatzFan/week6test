@@ -65,13 +65,17 @@ class Editor
     "'#{command.upcase}' does not take parameters."
   end
 
+  def no_image_yet
+    'Create an image first (I)'
+  end
+
   def help
     COMMANDS.each_pair { |cmd,function| puts "#{cmd}: #{function}" }
   end
 
   def c(params)
     return no_params_message(__method__) unless params.empty?
-    @image = Image.new(@image.m, @image.n)
+    @image = Image.new(@image.m, @image.n) if @image
   end
 
   def x(params)
@@ -92,6 +96,7 @@ class Editor
   end
 
   def l(params)
+    return no_image_yet unless @image
     coords = params[0], params[1]
     colour = params[2]
     if valid_coords?(coords) && valid_colour?(colour)
