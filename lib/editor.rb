@@ -5,7 +5,7 @@ class Editor
   COMMANDS = {:HELP => 'Shows this command list',
               :X => 'Exit',
               :I => 'Create new image M x N',
-              }
+              :S => 'Shows the current Image' }
 
   def initialize
     display_splash_message
@@ -42,6 +42,10 @@ class Editor
 
   def x(ignored)
     exit
+  end
+
+  def s(ignored)
+    puts @image
   end
 
   def i(args)

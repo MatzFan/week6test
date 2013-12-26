@@ -34,6 +34,11 @@ describe Editor do
     end
   end # of context
 
+  context 'validating input' do
+    it
+
+  end # of context
+
   context 'validating commands' do
     it 'should give a prompt with commands list if an invalid command used' do
       capture_output do
@@ -51,10 +56,21 @@ describe Editor do
   end # of context
 
   context 'command I' do
-    it "with args 250 250 should print a 2 by 2 grid of O's" do
+    it "with args 2 3 should create a 2 by 3 grid of O's" do
       capture_output do
-        editor.do_command('I 2 2').to_s.should eq("OO\nOO")
+        editor.do_command('I 2 3').to_s.should eq("OO\nOO\nOO")
       end
+    end
+  end # of context
+
+  context 'command S' do
+    it "with args 2 3 should print a 2 by 3 grid of O's" do
+      output = capture_output do
+        e = editor
+        e.do_command('I 2 3')
+        e.do_command('S')
+      end
+      output.should include("OO\nOO\nOO")
     end
   end # of context
 

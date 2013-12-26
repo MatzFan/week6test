@@ -7,9 +7,9 @@ class Image
   end
 
   def to_s
-    s = ''
-    @n.times { s << "#{'O' * @m}\n" }
-    s.chomp
+    (1..@n).inject('') { |string, num| string << "#{'O' * @m}\n"}.chomp
   end
+
+
 
 end
