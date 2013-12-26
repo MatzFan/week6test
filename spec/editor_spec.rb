@@ -27,6 +27,12 @@ describe Editor do
       end
     end
 
+    it 'should convert parameters represented by digits only to integers' do
+      capture_output do
+        editor.parse('cmd p1 2 45').should eq(['cmd', ['p1', 2, 45]])
+      end
+    end
+
     it 'should give a prompt on null entry' do
       capture_output do
         editor.do_command('').should eq('Please enter a valid command')
@@ -35,15 +41,14 @@ describe Editor do
   end # of context
 
   context 'validating input' do
-    it
-
-  end # of context
-
-  context 'validating commands' do
     it 'should give a prompt with commands list if an invalid command used' do
       capture_output do
         editor.do_command('Z').should eq("'Z' is not valid, try 'help'")
       end
+    end
+
+    xit 'should ' do
+
     end
   end # of context
 
@@ -71,6 +76,18 @@ describe Editor do
         e.do_command('S')
       end
       output.should include("OO\nOO\nOO")
+    end
+  end # of context
+
+  context 'command L' do
+    it "with args '2 3 A' should colour a single pixel" do
+      output = capture_output do
+        e = editor
+        e.do_command('I 3 4')
+        e.do_command('L 2 3 A')
+        e.do_command('S')
+      end
+      output.should include("OOO\nOOO\nOAO\nOOO")
     end
   end # of context
 

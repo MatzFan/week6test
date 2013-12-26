@@ -1,6 +1,6 @@
 class Image
 
-  VALID_COLOURS = ('A'..'Z').to_a
+  attr_reader :m, :n
 
   def initialize(m, n)
     @m = m
@@ -8,7 +8,8 @@ class Image
     @chars = Array.new(m * n, 'O')
   end
 
-  def colour_pixel(x,y,colour)
+  def colour_pixel(coords,colour)
+    x, y = coords
     @chars[(y - 1) * @m + x - 1] = colour
   end
 

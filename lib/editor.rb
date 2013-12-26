@@ -5,7 +5,16 @@ class Editor
   COMMANDS = {:HELP => 'Shows this command list',
               :X => 'Exit',
               :I => 'Create new image M x N',
-              :S => 'Shows the current Image' }
+              :S => 'Shows the current Image',
+              :L => 'Colours a single pixel (X,Y) with colour C',
+              :H => 'Draws a horizonal segment of colour C in row Y between'+
+                    ' columns X1 and X2 inclusive',
+              :V => 'Draws a vertical segment of colour C in column X between'+
+                    ' rows Y1 and Y2 inclusive',
+              :F => 'Fills contiguous region with colour C starting at pixel'+
+                    ' X,Y'}
+
+  VALID_COLOURS = ('A'..'Z').to_a
 
   def initialize
     display_splash_message
@@ -29,7 +38,9 @@ class Editor
 
   def parse(input)
     args = input.split(' ')
-    return args[0], args[1..-1]
+    args.each_with_index { |arg, i| args[i] = arg.to_i if arg =~ /^[0-9]+$/ }
+    command = args[0]
+    return args.length == 1 ? command : command, args[1..-1]
   end
 
   def validate(command, params)
@@ -40,6 +51,16 @@ class Editor
     end
   end
 
+  def valid_coords?(coords)
+    x = coords[0].to_i
+    y = coords[1].to_i
+    @image ? x <= @image.m && y <= @image.n : x <= 250 && y <= 250
+  end
+
+  def valid_colour?(colour)
+    VALID_COLOURS.include? colour
+  end
+
   def x(ignored)
     exit
   end
@@ -48,13 +69,19 @@ class Editor
     puts @image
   end
 
-  def i(args)
-    begin
-      m, n = args[0].to_i, args[1].to_i
-    rescue ArguementError
-      return "Command 'I' takes two integer prameters"
+  def i(coords)
+    if valid_coords?(coords)
+      m, n = coords[0].to_i, coords[1].to_i
+      @image = Image.new(m, n)
     end
-    @image = Image.new(m, n)
+  end
+
+  def l(args)
+    coords = args[0], args[1]
+    colour = args[2]
+    if valid_coords?(coords) && valid_colour?(colour)
+      @image.colour_pixel(coords, colour)
+    end
   end
 
 end # of class
