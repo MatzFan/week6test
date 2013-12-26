@@ -118,35 +118,36 @@ class Editor
     return wrong_number_of_params(__method__, 3) if params.length != 3
     colour = check_colour(params.pop)
     coords = check_coords(params)
-    @image.colour_pixel(coords, colour) #if coords && colour
+    @image.colour_pixel(coords, colour)
   end
 
   def v(params)
-    # return no_image_yet unless @image
-    # return wrong_number_of_params(__method__, 4) if params.length != 4
+    return no_image_yet unless @image
+    return wrong_number_of_params(__method__, 4) if params.length != 4
     colour = check_colour(params.pop)
     x = params.shift
     y1, y2 = params
-    # puts "Params are #{x}, #{y1}, #{y2}, #{colour}"
-    # check_coords(x, y1)
-    # check_coords(x, y1)
+    check_coords([x, y1])
+    check_coords([x, y2])
     (y1..y2).each { |y| @image.colour_pixel([x,y], colour) }
   end
 
   def h(params)
     return no_image_yet unless @image
     return wrong_number_of_params(__method__, 4) if params.length != 4
-    y = params.delete(2)
+    colour = check_colour(params.pop)
+    y = params.delete_at(2)
     x1, x2 = params
-    check_coords_and_colour(params)
-
-
+    check_coords([x1, y])
+    check_coords([x2, y])
+    (x1..x2).each { |x| @image.colour_pixel([x,y], colour) }
   end
 
   def f(params)
     return no_image_yet unless @image
     return wrong_number_of_params(__method__, 3) if params.length != 3
-    coords, colour = check_coords_and_colour(params)
+    colour = check_colour(params.pop)
+    coords = check_coords(params)
     @image.colour_fill(coords, colour)
   end
 

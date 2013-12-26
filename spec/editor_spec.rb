@@ -57,6 +57,25 @@ describe Editor do
         editor.do_command('s').should eq("'s' is not valid, try 'help'")
       end
     end
+
+    it 'should display a message if invalid coords are provided' do
+      capture_output do
+        e = editor
+        e.do_command('I 2 3')
+        e.do_command('L 3 5 G').should eq('Invalid coordinates')
+      end
+    end
+
+    it 'should display a message if invalid colour is provided' do
+      wrong_colours = ['x', '1', '>', '$']
+      capture_output do
+        e = editor
+        e.do_command('I 2 3')
+        wrong_colours.each do |colour|
+          e.do_command("L 3 5 #{colour}").should eq('Invalid colour')
+        end
+      end
+    end
   end # of context
 
   context 'command X' do
@@ -121,7 +140,7 @@ describe Editor do
     it "should colour a single pixel with args '2 3 A'" do
       output = capture_output do
         e = editor_3_4
-        e.do_command('L 2 3 A')
+        e.do_command("L 2 3 A")
         e.do_command('S')
       end
       output[-16..-2].should eq("OOO\nOOO\nOAO\nOOO")
@@ -142,15 +161,6 @@ describe Editor do
     it "should display an error message if coords out of range" do
       capture_output do
         editor_3_4.do_command('L 7 3 A').should eq('Invalid coordinates')
-      end
-    end
-
-    it "should display an error message if an invalid colour is provided" do
-      wrong_colours = ['x', '1', '>', '$']
-      capture_output do
-        wrong_colours.each do |colour|
-          editor_3_4.do_command("L 2 3 #{colour}").should eq('Invalid colour')
-        end
       end
     end
   end # of context
@@ -187,6 +197,17 @@ describe Editor do
         e.do_command('S')
       end
       output[-16..-2].should eq("OOO\nOOO\nOHO\nOHO")
+    end
+  end # of context
+
+  context 'command H' do
+    it "should draw a horizontal segment in an image" do
+      output = capture_output do
+        e = editor_3_4
+        e.do_command("H 1 2 4 N")
+        e.do_command('S')
+      end
+      output[-16..-2].should eq("OOO\nOOO\nOOO\nNNO")
     end
   end # of context
 
