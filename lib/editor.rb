@@ -1,4 +1,4 @@
-require 'image'
+require_relative 'image'
 
 class Editor
 
@@ -61,27 +61,44 @@ class Editor
     VALID_COLOURS.include? colour
   end
 
-  def x(ignored)
+  def no_params_message(command)
+    "'#{command.upcase}' does not take parameters."
+  end
+
+  def x(params)
+    return no_params_message(__method__) if !params.empty?
     exit
   end
 
-  def s(ignored)
+  def s(params)
     puts @image
   end
 
-  def i(coords)
-    if valid_coords?(coords)
-      m, n = coords[0].to_i, coords[1].to_i
+  def i(params)
+    if valid_coords?(params)
+      m, n = params[0].to_i, params[1].to_i
       @image = Image.new(m, n)
     end
   end
 
-  def l(args)
-    coords = args[0], args[1]
-    colour = args[2]
+  def l(params)
+    coords = params[0], params[1]
+    colour = params[2]
     if valid_coords?(coords) && valid_colour?(colour)
       @image.colour_pixel(coords, colour)
     end
+  end
+
+  def v(params)
+    puts @image
+  end
+
+  def h(params)
+    puts @image
+  end
+
+  def f(params)
+    puts @image
   end
 
 end # of class

@@ -46,16 +46,18 @@ describe Editor do
         editor.do_command('Z').should eq("'Z' is not valid, try 'help'")
       end
     end
-
-    xit 'should ' do
-
-    end
   end # of context
 
   context 'command X' do
     it 'should exit the app' do
       capture_output do
         lambda { editor.do_command('X') }.should raise_error(SystemExit)
+      end
+    end
+
+    it 'should display an error message if parameters provided' do
+      capture_output do
+        editor.do_command('X 2 3').should eq("'X' does not take parameters.")
       end
     end
   end # of context
