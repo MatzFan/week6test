@@ -15,7 +15,7 @@ describe Editor do
 
     it 'should include a list of the commands' do
       output = capture_output { editor }
-      Editor::COMMAND_TEXT.each_pair do |cmd, text|
+      Editor::CMD_TEXT.each_pair do |cmd, text|
         output.should include("#{cmd}: #{text}" )
       end
     end
@@ -47,14 +47,14 @@ describe Editor do
       bad_cmds = ['Z', '`', '!', '?', '[', 'exit']
       capture_output do
         bad_cmds.each do |cmd|
-          editor.do_command(cmd).should eq("'#{cmd}' is not valid, try 'help'")
+          editor.do_command(cmd).should eq("'#{cmd}' invalid, try 'help'")
         end
       end
     end
 
     it 'should give a prompt with commands list if lower-case command used' do
       capture_output do
-        editor.do_command('s').should eq("'s' is not valid, try 'help'")
+        editor.do_command('s').should eq("'s' invalid, try 'help'")
       end
     end
 

@@ -6,7 +6,7 @@ class Editor
 
   X_MAX, Y_MAX = 250, 250
 
-  COMMAND_TEXT = {
+  CMD_TEXT = {
     :HELP => 'Shows this command list',
     :I => "Creates new image M x N pixels up to #{X_MAX} x #{Y_MAX}",
     :C => 'Clears the table, setting all pixels to white (O)',
@@ -44,15 +44,12 @@ class Editor
     return args.length == 1 ? command : command, args[1..-1]
   end
 
-  def validate(command, params)
-    if COMMAND_TEXT.keys.include? command.to_sym
-      begin
-        self.send(command.downcase, params)
-      rescue ArgumentError => e
-        return e.message
-      end
-    else
-      return "'#{command}' is not valid, try 'help'"
+  def validate(cmd, params)
+    return "'#{cmd}' invalid, try 'help'" if !CMD_TEXT.keys.include? cmd.to_sym
+    begin
+      self.send(cmd.downcase, params)
+    rescue ArgumentError => e
+      return e.message
     end
   end
 
@@ -75,7 +72,7 @@ class Editor
   end
 
   def help(params_ignored)
-    COMMAND_TEXT.each_pair do |cmd, text|
+    CMD_TEXT.each_pair do |cmd, text|
       puts "#{cmd}: #{text}"
     end
   end
@@ -133,14 +130,11 @@ class Editor
   end
 
   def h(params)
-    return no_image_yet unless @image
-    return wrong_number_of_params(__method__, 4) if params.length != 4
-    colour = check_colour(params.pop)
-    y = params.delete_at(2)
-    x1, x2 = params
-    check_coords([x1, y])
-    check_coords([x2, y])
-    (x1..x2).each { |x| @image.colour_pixel([x,y], colour) }
+    params.unshift(params.delete_at(2))
+    p params
+    @image.transpose
+    v(params)
+    @image.transpose
   end
 
   def f(params)

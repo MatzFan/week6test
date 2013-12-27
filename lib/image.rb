@@ -1,11 +1,15 @@
 class Image
 
-  attr_reader :m, :n
-
   def initialize(m, n)
-    @m = m
-    @n = n
     @chars = Array.new(n) { Array.new(m) { 'O' } }
+  end
+
+  def m
+    @chars[0].size
+  end
+
+  def n
+    @chars.size
   end
 
   def colour_pixel(coords, colour)
@@ -14,7 +18,11 @@ class Image
   end
 
   def colour_fill(coords, colour)
-    # x, y = coords
+    y, x = coords
+  end
+
+  def transpose
+    @chars = @chars.transpose
   end
 
   def to_s
