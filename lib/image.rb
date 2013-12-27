@@ -5,25 +5,20 @@ class Image
   def initialize(m, n)
     @m = m
     @n = n
-    @chars = Array.new(m * n, 'O')
+    @chars = Array.new(n) { Array.new(m) { 'O' } }
   end
 
   def colour_pixel(coords, colour)
-    x, y = coords
-    @chars[(y - 1) * @m + x - 1] = colour
+    y, x = coords
+    @chars[x - 1][y -1] = colour
   end
 
   def colour_fill(coords, colour)
-    x, y = coords
-
+    # x, y = coords
   end
 
   def to_s
-    string = ''
-    (0..@n -1).inject(string) do |string, num|
-      string << "#{@chars[num * @m..@m * (num + 1) -1].join('')}\n"
-    end
-    string.chomp
+    @chars.map { |row| "#{row.join('')}\n" }.join('').chomp
   end
 
 end
