@@ -209,6 +209,15 @@ describe Editor do
       end
       output[-16..-2].should eq("OOO\nOOO\nOOO\nNNO")
     end
+
+    it "should leave the image un-transposed if it fails for any reason" do
+      output = capture_output do
+        e = editor_3_4
+        e.do_command("H 1 7 4 N")
+        e.do_command('S')
+      end
+      output[-16..-2].should eq("OOO\nOOO\nOOO\nOOO")
+    end
   end # of context
 
   context 'command F' do

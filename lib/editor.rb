@@ -130,10 +130,13 @@ class Editor
   end
 
   def h(params)
-    params.unshift(params.delete_at(2))
+    params.unshift(params.delete_at(2)) # gets params in same order as 'v'
     @image.transpose
-    v(params)
-    @image.transpose
+    begin
+      v(params)
+    ensure
+      @image.transpose
+    end
   end
 
   def f(params)

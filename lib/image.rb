@@ -5,7 +5,7 @@ class Image
   end
 
   def m
-    @chars[0].size
+    @chars.first.size
   end
 
   def n
@@ -29,20 +29,16 @@ class Image
     old_colour = pixel_colour(coords)
     colour_pixel(coords, colour)
     adjacent_pixels_same_colour(coords, old_colour).each do |adjacent|
-      if pixel_colour(adjacent) != colour
-        colour_fill(adjacent, colour)
-      end
+      colour_fill(adjacent, colour) if pixel_colour(adjacent) != colour
     end
   end
 
   def adjacent_pixels_same_colour(coords, colour)
     x, y = coords
-    pixel_list = []
-    pixel_list << [x-1, y] if self.contains?([x-1, y]) && pixel_colour([x-1, y]) == colour
-    pixel_list << [x+1, y] if self.contains?([x+1, y]) && pixel_colour([x+1, y]) == colour
-    pixel_list << [x, y-1] if self.contains?([x, y-1]) && pixel_colour([x, y-1]) == colour
-    pixel_list << [x, y+1] if self.contains?([x, y+1]) && pixel_colour([x, y+1]) == colour
-    pixel_list
+    candidates = [[x-1, y], [x+1, y], [x, y-1], [x, y+1]]
+    candidates.select do |candidate|
+      self.contains?(candidate) && pixel_colour(candidate) == colour
+    end
   end
 
   def transpose

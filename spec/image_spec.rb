@@ -19,10 +19,10 @@ describe Image do
       image.pixel_colour([2,3]).should eq('A')
     end
 
-    it 'should know if given coordinates are contained in the image' do
+    it 'should include whether provided coordinates are contained' do
       image = image_3_4
-      image.contains?([2,4]).should be_true
-      image.contains?([4,3]).should_not be_true
+      image.contains?([2, 4]).should be_true
+      image.contains?([4, 3]).should_not be_true
     end
   end # of context
 
