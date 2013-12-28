@@ -131,7 +131,6 @@ class Editor
 
   def h(params)
     params.unshift(params.delete_at(2))
-    p params
     @image.transpose
     v(params)
     @image.transpose

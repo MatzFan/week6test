@@ -95,7 +95,7 @@ describe Editor do
   context 'command I' do
     it "should create a 2 by 3 grid of O's with args 2 3" do
       capture_output do
-        editor.do_command('I 2 3').to_s.should eq("OO\nOO\nOO")
+        editor.do_command('I 2 3').to_s.should eq("OO\nOO\nOO\n")
       end
     end
 
@@ -208,6 +208,18 @@ describe Editor do
         e.do_command('S')
       end
       output[-16..-2].should eq("OOO\nOOO\nOOO\nNNO")
+    end
+  end # of context
+
+  context 'command F' do
+    it "should colour-fill an image" do
+      output = capture_output do
+        e = editor_3_4
+        e.do_command('V 2 3 4 H')
+        e.do_command('F 3 4 W')
+        e.do_command('S')
+      end
+      output[-16..-2].should eq("WWW\nWWW\nWHW\nWHW")
     end
   end # of context
 
