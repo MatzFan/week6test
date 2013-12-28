@@ -223,4 +223,33 @@ describe Editor do
     end
   end # of context
 
+  context "HELLO WORLD example" do
+    it "it should draw 'HELLO !'" do
+      output = capture_output do
+        e = Editor.new
+        e.do_command('I 28 9')
+        e.do_command('V 2 2 8 M')
+        e.do_command('V 5 2 8 M')
+        e.do_command('V 7 2 7 M')
+        e.do_command('V 12 2 7 M')
+        e.do_command('V 17 2 7 M')
+        e.do_command('V 22 3 7 M')
+        e.do_command('V 25 3 7 M')
+        e.do_command('V 27 2 8 M')
+        e.do_command('H 3 10 5 M')
+        e.do_command('H 8 10 2 M')
+        e.do_command('H 7 20 8 M')
+        e.do_command('H 23 24 2 M')
+        e.do_command('H 23 24 8 M')
+        e.do_command('L 6 5 O')
+        e.do_command('L 11 8 O')
+        e.do_command('L 16 8 O')
+        e.do_command('L 27 7 O')
+        e.do_command('F 28 8 I')
+        e.do_command('S')
+      end
+      output[-261..-2].should eq(HELLO)
+    end
+  end # of context
+
 end # of describe
