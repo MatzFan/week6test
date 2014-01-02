@@ -12,4 +12,4 @@ Getting started
 - It then prompts for a user command and loops until user wishes to exit
 - Invalid commands or command parameters (*all uppercase*) are met with a prompt to try again or consult the help
 
-The final unit test in /spec/editor_spec.rb does a demonstration of several commands to draw 'HELLO !' and then fills the background region. The 'O' in 'HELLO !' remains unfilled, as a demonstration of how fill works - i.e. it does not cross diagonally connected 'pixels' of the same colour.
+The final unit test in /spec/editor_spec.rb does a demonstration of several commands to draw 'HELLO !' and then fills the background region. The 'O' in 'HELLO !' remains unfilled, as a demonstration of how fill works - i.e. it crosses to adjacent pixels of the same colour, but does not cross diagonally connected pixels.
