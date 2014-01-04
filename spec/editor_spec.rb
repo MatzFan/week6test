@@ -210,6 +210,13 @@ describe Editor do
       output[-16..-2].should eq("OOO\nOOO\nOOO\nNNO")
     end
 
+    it "should display an error message if wrong number of parameters given" do
+      capture_output do
+        e = editor_3_4
+        e.do_command("H 1").should eq("H takes 4 parameters, try 'help'")
+      end
+    end
+
     it "should leave the image un-transposed if it fails for any reason" do
       output = capture_output do
         e = editor_3_4

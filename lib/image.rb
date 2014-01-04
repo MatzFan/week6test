@@ -1,5 +1,7 @@
 class Image
 
+  attr_accessor :chars
+
   def initialize(m, n)
     @chars = Array.new(n) { Array.new(m) { ('O') } }
   end
@@ -27,11 +29,26 @@ class Image
 
   def colour_fill(coords, colour)
     old_colour = pixel_colour(coords)
-    colour_pixel(coords, colour)
-    adjacent_pixels_same_colour(coords, old_colour).each do |adjacent|
-      colour_fill(adjacent, colour) if pixel_colour(adjacent) != colour
+    pixels_to_colour = [coords]
+    while !pixels_to_colour.empty?
+      pixels_to_colour.each { |coords| colour_pixel(coords, colour) }
+      coloured_pixels = pixels_to_colour.dup
+      coloured_pixels.each do |adjacent|
+        next_pixel_set = adjacent_pixels_same_colour(adjacent, old_colour)
+        pixels_to_colour += next_pixel_set if next_pixel_set
+      end
+      pixels_to_colour = pixels_to_colour.uniq
+      pixels_to_colour.shift(coloured_pixels.count)
     end
   end
+
+  # def colour_fill(coords, colour)
+  #   old_colour = pixel_colour(coords)
+  #   colour_pixel(coords, colour)
+  #   adjacent_pixels_same_colour(coords, old_colour).each do |adjacent|
+  #     colour_fill(adjacent, colour) if pixel_colour(adjacent) != colour
+  #   end
+  # end
 
   def adjacent_pixels_same_colour(coords, colour)
     x, y = coords

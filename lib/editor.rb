@@ -130,6 +130,8 @@ class Editor
   end
 
   def h(params)
+    return no_image_yet unless @image
+    return wrong_number_of_params(__method__, 4) if params.length != 4
     params.unshift(params.delete_at(2)) # gets params in same order as 'v'
     @image.transpose
     begin
