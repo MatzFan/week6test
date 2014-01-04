@@ -16,7 +16,7 @@ describe Editor do
     it 'should include a list of the commands' do
       output = capture_output { editor }
       Editor::CMD_TEXT.each_pair do |cmd, text|
-        output.should include("#{cmd}: #{text}" )
+        output.should include("#{cmd}#{text}" )
       end
     end
   end # of context
@@ -59,22 +59,24 @@ describe Editor do
     end
 
     it 'should display a message if invalid coords are provided' do
-      capture_output do
+      output = capture_output do
         e = editor
         e.do_command('I 2 3')
-        e.do_command('L 3 5 G').should eq('Invalid coordinates')
+        e.do_command('L 3 5 G')
       end
+      output[-20..-2].should eq('Invalid coordinates')
     end
 
     it 'should display a message if invalid colour is provided' do
       wrong_colours = ['x', '1', '>', '$']
-      capture_output do
+      output = capture_output do
         e = editor
         e.do_command('I 2 3')
         wrong_colours.each do |colour|
-          e.do_command("L 3 5 #{colour}").should eq('Invalid colour')
+          e.do_command("L 3 5 #{colour}")
         end
       end
+      output[-60..-2].gsub("\n",'').should eq('Invalid colour'*4)
     end
   end # of context
 
@@ -86,23 +88,26 @@ describe Editor do
     end
 
     it 'should display an error message if parameters provided' do
-      capture_output do
-        editor.do_command('X 2 3').should eq("'X' does not take parameters.")
+      output = capture_output do
+        editor.do_command('X 2 3')
       end
+      output[-30..-2].should eq("'X' does not take parameters.")
     end
   end # of context
 
   context 'command I' do
     it "should create a 2 by 3 grid of O's with args 2 3" do
       capture_output do
-        editor.do_command('I 2 3').to_s.should eq("OO\nOO\nOO\n")
+        editor.do_command('I 2 3')
+        editor.to_s.should eq("OO\nOO\nOO\n")
       end
     end
 
     it "should display an error message if wrong number of parameters given" do
-      capture_output do
-        editor.do_command('I 2 4 R').should eq("I takes 2 parameters, try 'help'")
+      output = capture_output do
+        editor.do_command('I 2 4 R')
       end
+      output[-33..-2].should eq("I takes 2 parameters, try 'help'")
     end
 
     it "should display an error message with zero or negative coords" do
@@ -130,9 +135,10 @@ describe Editor do
     end
 
     it 'should display an error message if parameters are provided' do
-      capture_output do
-        editor.do_command('S 2 3').should eq("'S' does not take parameters.")
+      output = capture_output do
+        editor.do_command('S 2 3')
       end
+      output[-30..-2].should eq("'S' does not take parameters.")
     end
   end # of context
 
@@ -147,21 +153,24 @@ describe Editor do
     end
 
     it "should display an error message if no image has been created" do
-      capture_output do
-        editor.do_command('L 2 3 A').should eq("Create an image first with 'I'")
+      output = capture_output do
+        editor.do_command('L 2 3 A')
       end
+      output[-31..-2].should eq("Create an image first with 'I'")
     end
 
     it "should display an error message if wrong number of parameters given" do
-      capture_output do
-        editor_3_4.do_command('L 2').should eq("L takes 3 parameters, try 'help'")
+      output = capture_output do
+        editor_3_4.do_command('L 2')
       end
+      output[-33..-2].should eq("L takes 3 parameters, try 'help'")
     end
 
     it "should display an error message if coords out of range" do
-      capture_output do
-        editor_3_4.do_command('L 7 3 A').should eq('Invalid coordinates')
+      output = capture_output do
+        editor_3_4.do_command('L 7 3 A')
       end
+      output[-20..-2].should eq('Invalid coordinates')
     end
   end # of context
 
@@ -183,9 +192,10 @@ describe Editor do
     end
 
     it 'should display an error message if parameters are provided' do
-      capture_output do
-        editor.do_command('C 2 3').should eq("'C' does not take parameters.")
+      output = capture_output do
+        editor.do_command('C 2 3')
       end
+      output[-30..-2].should eq("'C' does not take parameters.")
     end
   end # of context
 
@@ -211,10 +221,11 @@ describe Editor do
     end
 
     it "should display an error message if wrong number of parameters given" do
-      capture_output do
+      output = capture_output do
         e = editor_3_4
-        e.do_command("H 1").should eq("H takes 4 parameters, try 'help'")
+        e.do_command("H 1")
       end
+      output[-33..-2].should eq("H takes 4 parameters, try 'help'")
     end
 
     it "should leave the image un-transposed if it fails for any reason" do

@@ -7,17 +7,17 @@ class Editor
   X_MAX, Y_MAX = 250, 250
 
   CMD_TEXT = {
-    :HELP => 'Shows this command list',
-    :I => "Creates new image M x N pixels up to #{X_MAX} x #{Y_MAX}",
-    :C => 'Clears the table, setting all pixels to white (O)',
-    :L => 'Colours a single pixel (X,Y) with colour C',
-    :V => 'Draws a vertical segment of colour C in column X between'+
+    :HELP => ': Shows this command list',
+    :I => " M N: Creates new image M x N pixels up to #{X_MAX} x #{Y_MAX}",
+    :C => ': Clears the table, setting all pixels to white (O)',
+    :L => ' X Y C: Colours a single pixel (X,Y) with colour C',
+    :V => ' X Y1 Y2 C: Draws a vertical segment of colour C in column X between'+
           ' rows Y1 and Y2 inclusive',
-    :H => 'Draws a horizonal segment of colour C in row Y between'+
+    :H => ' X1 X2 Y C: Draws a horizonal segment of colour C in row Y between'+
           ' columns X1 and X2 inclusive',
-    :F => 'Fills contiguous region with colour C starting at pixel X,Y',
-    :S => 'Shows the current image',
-    :X => 'Exit'
+    :F => ' X Y C: Fills contiguous region with colour C starting at pixel X,Y',
+    :S => ': Shows the current image',
+    :X => ': Exit'
   }
 
   def initialize
@@ -49,7 +49,7 @@ class Editor
     begin
       self.send(cmd.downcase, params)
     rescue ArgumentError => e
-      return e.message
+      puts e.message
     end
   end
 
@@ -60,20 +60,20 @@ class Editor
   end
 
   def no_params(command)
-    "'#{command.upcase}' does not take parameters."
+    puts "'#{command.upcase}' does not take parameters."
   end
 
   def wrong_number_of_params(command, num)
-    "#{command.upcase} takes #{num} parameters, try 'help'"
+    puts "#{command.upcase} takes #{num} parameters, try 'help'"
   end
 
   def no_image_yet
-    "Create an image first with 'I'"
+    puts "Create an image first with 'I'"
   end
 
   def help(params_ignored)
     CMD_TEXT.each_pair do |cmd, text|
-      puts "#{cmd}: #{text}"
+      puts "#{cmd}#{text}"
     end
   end
 
@@ -98,6 +98,7 @@ class Editor
     m, n = params[0], params[1]
     return "Maximum size is #{X_MAX} x #{Y_MAX}" if (m > 250 || n > 250)
     @image = Image.new(m, n)
+    return ''
   end
 
   def check_colour(colour)
@@ -153,6 +154,10 @@ class Editor
       copy_image.non_recursive_fill(coords, colour)
       @image = copy_image
     end
+  end
+
+  def to_s
+    @image.to_s
   end
 
 end # of class
