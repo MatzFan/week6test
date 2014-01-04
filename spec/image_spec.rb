@@ -46,17 +46,17 @@ describe Image do
       image.adjacent_pixels_same_colour([3,4], 'O').should eq([[2,4]])
     end
 
-    it "should colour-fill a small area from a given pixel coordinates" do
+    it "should colour-fill a small area from a given pixel recursively" do
       image = image_3_4
       image.colour_pixel([2,3],'A')
       image.colour_pixel([2,4],'A')
-      image.colour_fill([3,4], 'K')
+      image.recursive_fill([3,4], 'K')
       image.to_s.should eq("KKK\nKKK\nKAK\nKAK\n")
     end
 
-    it "should colour-fill an 250 x 250 image without stack overflow" do
+    it "should colour-fill a 250 x 250 image from a given pixel non-recursively" do
       image = Image.new(250, 250)
-      image.colour_fill([2,3],'A')
+      image.non_recursive_fill([2,3],'A')
       image.to_s.gsub("\n", "").should eq("A"* 250 * 250)
     end
   end # of context

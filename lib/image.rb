@@ -27,7 +27,7 @@ class Image
     @chars[coords[1] - 1][coords[0] -1] = colour
   end
 
-  def colour_fill(coords, colour)
+  def non_recursive_fill(coords, colour)
     old_colour = pixel_colour(coords)
     pixels_to_colour = [coords]
     while !pixels_to_colour.empty?
@@ -42,13 +42,13 @@ class Image
     end
   end
 
-  # def colour_fill(coords, colour)
-  #   old_colour = pixel_colour(coords)
-  #   colour_pixel(coords, colour)
-  #   adjacent_pixels_same_colour(coords, old_colour).each do |adjacent|
-  #     colour_fill(adjacent, colour) if pixel_colour(adjacent) != colour
-  #   end
-  # end
+  def recursive_fill(coords, colour)
+    old_colour = pixel_colour(coords)
+    colour_pixel(coords, colour)
+    adjacent_pixels_same_colour(coords, old_colour).each do |adjacent|
+      recursive_fill(adjacent, colour) if pixel_colour(adjacent) != colour
+    end
+  end
 
   def adjacent_pixels_same_colour(coords, colour)
     x, y = coords

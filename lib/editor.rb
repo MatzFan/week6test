@@ -146,7 +146,13 @@ class Editor
     return wrong_number_of_params(__method__, 3) if params.length != 3
     colour = check_colour(params.pop)
     coords = check_coords(params)
-    @image.colour_fill(coords, colour)
+    copy_image = @image.dup
+    begin
+      @image.recursive_fill(coords, colour)
+    rescue SystemStackError
+      copy_image.non_recursive_fill(coords, colour)
+      @image = copy_image
+    end
   end
 
 end # of class
