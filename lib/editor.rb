@@ -98,7 +98,6 @@ class Editor
     m, n = params[0], params[1]
     return "Maximum size is #{X_MAX} x #{Y_MAX}" if (m > 250 || n > 250)
     @image = Image.new(m, n)
-    return ''
   end
 
   def check_colour(colour)
