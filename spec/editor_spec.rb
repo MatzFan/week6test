@@ -1,6 +1,8 @@
 require 'spec_helper'
 require 'editor'
 
+# great test suite, well done!
+
 describe Editor do
 
   let(:editor) { Editor.new }
