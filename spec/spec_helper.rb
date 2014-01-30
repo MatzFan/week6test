@@ -1,5 +1,6 @@
 require 'stringio'
 
+# well done for using it
 def capture_output &block
   old_stdout = $stdout
   test_stdout = StringIO.new

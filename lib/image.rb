@@ -16,7 +16,7 @@ class Image
 
   def contains?(coords)
     x, y = coords
-    (x <= m && x > 0) && (y <= n && y > 0)
+    (x <= m && x > 0) && (y <= n && y > 0) # (1..m).include?(x) && (1..n).include?(y)
   end
 
   def pixel_colour(coords)
@@ -35,9 +35,11 @@ class Image
       coloured_pixels = pixels_to_colour.dup
       coloured_pixels.each do |adjacent|
         next_pixel_set = adjacent_pixels_same_colour(adjacent, old_colour)
+        # the conditions is unnecessary as next_pixel_set will never be nil
+        # because select() always returns as array (possibly empty)
         pixels_to_colour += next_pixel_set if next_pixel_set
       end
-      pixels_to_colour = pixels_to_colour.uniq
+      pixels_to_colour.uniq!
       pixels_to_colour.shift(coloured_pixels.count)
     end
   end

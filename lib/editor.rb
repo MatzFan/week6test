@@ -27,11 +27,13 @@ class Editor
 
   def display_splash_message
     puts "Welcome to the graphical editor. The commands are:\n\n"
-    help(nil)
+    help # never pass params that aren't used
     puts "\nPlease enter a command"
   end
 
   def do_command(input)
+    # invalid argument is an exceptional situation, it would be
+    # more appropriate to throw an exception and catch it elsewhere
     return 'Please enter a valid command' if input.strip.empty?
     command, params = parse(input)
     validate(command, params)
@@ -44,10 +46,16 @@ class Editor
     return args.length == 1 ? command : command, args[1..-1]
   end
 
+  # The name is misleading but that's because this method is going two things:
+  # it checks if the command is valid and executes it. I'd split it into two
+  # separate methods and change the name of this one to 'execute' or something like that.
+  # Again, instead of returning things, throw an exception and let do_command catch it.
+  # Otherwise your method has a complex behaviour: it may execute things, it may return nil,
+  # it may return a string or it may print a string on the screen. It could be simpler.
   def validate(cmd, params)
     return "'#{cmd}' invalid, try 'help'" if !CMD_TEXT.keys.include? cmd.to_sym
     begin
-      self.send(cmd.downcase, params)
+      params ? self.send(cmd.downcase, params) : self.send(cmd.downcase)
     rescue ArgumentError => e
       puts e.message
     end
@@ -56,7 +64,8 @@ class Editor
   def valid_coords?(coords)
     return unless coords.length == 2 && coords.all? { |c| c.is_a? Integer }
     return unless coords[0] > 0 && coords[1] > 0
-    @image ? coords[0] <= @image.m && coords[1] <= @image.n : true
+    return true unless @image
+    coords[0] <= @image.m && coords[1] <= @image.n
   end
 
   def no_params(command)
@@ -71,14 +80,18 @@ class Editor
     puts "Create an image first with 'I'"
   end
 
-  def help(params_ignored)
+  # it's never a good idea to have do params_ignored  
+  def help
     CMD_TEXT.each_pair do |cmd, text|
       puts "#{cmd}#{text}"
     end
   end
 
+  # these method names aren't descriptive. It'd be better to have
+  # proper names and a hash somewhere describing the relationship, e.g.
+  # {:x => :quit, :c => :clear, :s => :show}
   def c(params)
-    return no_params(__method__) unless params.empty?
+    return no_params(__method__) unless params.empty? # this line is repeated 3 times. Surely it's possible to avoid it?
     @image = Image.new(@image.m, @image.n) if @image
   end
 
@@ -110,6 +123,10 @@ class Editor
     coords
   end
 
+  # The following methods have inconsistent behaviour. If there's no image
+  # they print a string but if there's a problem with coordinates, they
+  # raise an error. It would be better to raise an error in case of any 
+  # problem.
   def l(params)
     return no_image_yet unless @image
     return wrong_number_of_params(__method__, 3) if params.length != 3
@@ -145,10 +162,12 @@ class Editor
     return no_image_yet unless @image
     return wrong_number_of_params(__method__, 3) if params.length != 3
     colour = check_colour(params.pop)
-    coords = check_coords(params)
+    coords = check_coords(params)    
     copy_image = @image.dup
     begin
       @image.recursive_fill(coords, colour)
+    # that's clever but you'd need to have a reason to do it in real life
+    # because you could have applied non-recursive fill straight away.
     rescue SystemStackError
       copy_image.non_recursive_fill(coords, colour)
       @image = copy_image
